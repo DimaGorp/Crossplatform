@@ -1,0 +1,106 @@
+Vagrant.configure("2") do |config|
+
+  # Ubuntu Box
+  config.vm.define "ubuntu" do |ubuntu_config|
+    ubuntu_config.vm.box = "bento/ubuntu-20.04"
+    ubuntu_config.vm.network "private_network", ip: "192.168.50.4"
+    ubuntu_config.vm.network "forwarded_port", guest: 5000, host: 5000
+    ubuntu_config.vm.synced_folder ".", "/home/vagrant/CrossPlatformDevelopment-16"
+
+    ubuntu_config.vm.provider "virtualbox" do |vb|
+      vb.name = "ubuntu"
+      vb.gui = false
+      vb.memory = "2048"
+      vb.cpus = 3
+    end
+
+    ubuntu_config.vm.provision "shell", inline: <<-SHELL
+      # Update system and install .NET SDK
+      sudo apt-get update -y
+      wget https://packages.microsoft.com/config/ubuntu/20.04/packages-microsoft-prod.deb -O packages-microsoft-prod.deb
+      sudo dpkg -i packages-microsoft-prod.deb
+      sudo apt-get update
+      sudo apt-get install -y dotnet-sdk-8.0
+
+      # Install Docker
+      sudo apt install -y docker.io
+      sudo systemctl start docker
+      sudo systemctl enable docker
+
+      # Pull Docker image and run it
+      sudo docker pull loicsharma/baget
+      sudo docker run -d -p 5000:80 --name baget loicsharma/baget
+
+      # Configure NuGet and install .NET tool
+      export PATH="$PATH:/home/vagrant/.dotnet/tools"
+      dotnet nuget add source "http://192.168.50.4:5000/v3/index.json" -n "Rep"
+      dotnet tool install --global dgorpinuk --version 1.0.0 --add-source http://192.168.50.4:5000/v3/index.json
+    SHELL
+  end
+
+  # Windows Box
+  config.vm.define "windows" do |windows_config|
+    windows_config.vm.box = "windows/2022"
+    windows_config.vm.network "private_network", ip: "192.168.50.4"
+    windows_config.vm.network "forwarded_port", guest: 5000, host: 5000
+    windows_config.vm.synced_folder ".", "C:/CrossPlatformDevelopment-16"
+
+    windows_config.vm.provider "virtualbox" do |vb|
+      vb.name = "windows"
+      vb.gui = false
+      vb.memory = "2048"
+      vb.cpus = 3
+    end
+
+    windows_config.vm.provision "powershell", inline: <<-SHELL
+      # Install .NET SDK
+      Invoke-WebRequest -Uri https://aka.ms/install-dotnet.ps1 -OutFile dotnet-install.ps1
+      powershell -ExecutionPolicy Bypass -File dotnet-install.ps1 -Channel 8.0
+
+      # Install Docker
+      choco install docker-desktop -y
+      & "C:/Program Files/Docker/Docker/Docker Desktop.exe" &
+
+      # Pull Docker image and run
+      docker pull loicsharma/baget
+      docker run -d -p 5000:80 --name baget loicsharma/baget
+
+      # Configure NuGet and install .NET tool
+      dotnet nuget add source "http://192.168.50.4:5000/v3/index.json" -n "Rep"
+      dotnet tool install --global dgorpinuk --version 1.0.0 --add-source http://192.168.50.4:5000/v3/index.json
+    SHELL
+  end
+
+  # macOS Box (using Ubuntu 20.04 for simplicity, with macOS-like behavior)
+  config.vm.define "macos" do |macos_config|
+    macos_config.vm.box = "generic/ubuntu2004"
+    macos_config.vm.network "private_network", ip: "192.168.50.4"
+    macos_config.vm.network "forwarded_port", guest: 5000, host: 5000
+    macos_config.vm.synced_folder ".", "/Users/vagrant/CrossPlatformDevelopment-16"
+
+    macos_config.vm.provider "virtualbox" do |vb|
+      vb.name = "macos"
+      vb.gui = false
+      vb.memory = "2048"
+      vb.cpus = 3
+    end
+
+    macos_config.vm.provision "shell", inline: <<-SHELL
+      # Update system and install .NET SDK
+      brew install --cask dotnet-sdk
+
+      # Install Docker
+      brew install --cask docker
+      open /Applications/Docker.app
+
+      # Pull Docker image and run
+      docker pull loicsharma/baget
+      docker run -d -p 5000:80 --name baget loicsharma/baget
+
+      # Configure NuGet and install .NET tool
+      dotnet nuget add source "http://192.168.50.4:5000/v3/index.json" -n "Rep"
+      dotnet tool install --global dgorpinuk --version 1.0.0 --add-source http://192.168.50.4:5000/v3/index.json
+    SHELL
+  end
+
+end
