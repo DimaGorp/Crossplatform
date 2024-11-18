@@ -8,12 +8,25 @@ using System.IO;
 [Command(Description = "Bichkov",Name ="LabTool")]
 [Subcommand(typeof(Version))]
 [Subcommand(typeof(Runner))]
-[Subcommand(typeof(Helper))]
 [Subcommand(typeof(EnvPathSetter))]
 class Program
 {   
     public static void Main(string[] args) => 
     CommandLineApplication.Execute<Program>(args);
+    
+    private void OnExecute()
+    {
+        Console.WriteLine("Specify a command");
+    }
+
+    private void OnUnknownCommand(CommandLineApplication app)
+    {
+        Console.WriteLine("Usage:");
+        Console.WriteLine("  version|v                Show version info");
+        Console.WriteLine("  run [lab1|lab2|lab3]   Run a specific lab");
+        Console.WriteLine("  set-path -p|--path <path>     Set the LAB_PATH environment variable");
+        return;
+    }
 
 }
 [Command(Name="version|v",Description="Show a version of a Library")]
@@ -108,18 +121,6 @@ class Runner
     }
 }
 
-[Command(Name = "help", Description = "Usage Helper")]
-class Helper
-{
-    private void OnExecute()
-    {
-        Console.WriteLine("Usage:");
-        Console.WriteLine("  version|v                Show version info");
-        Console.WriteLine("  run [lab1|lab2|lab3]   Run a specific lab");
-        Console.WriteLine("  set-path -p|--path <path>     Set the LAB_PATH environment variable");
-        return;
-    }
-}
 [Command(Name = "set-path", Description = "Set the LAB_PATH environment variable")]
 class EnvPathSetter
 {
