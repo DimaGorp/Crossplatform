@@ -1,11 +1,11 @@
-using Lab1;
+
 namespace LabLibrary
 {
-    public static class Lab1
+    public static class Lab2
     {
         public static void Run(string inputFile = null, string outputFile = null)
         {
-            Program.Run(inputFile, outputFile);
+            Lab2Main.Program.Run(inputFile, outputFile);
         }
     }
 }

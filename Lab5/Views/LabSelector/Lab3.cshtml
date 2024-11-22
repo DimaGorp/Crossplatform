@@ -1,0 +1,94 @@
+@{
+    ViewData["Title"] = "Lab 3";
+}
+
+<h2>Lab 3</h2>
+
+@if (ViewBag.ErrorMessage != null)
+{
+    <p style="color:red;">@ViewBag.ErrorMessage</p>
+}
+
+@if (ViewBag.SuccessMessage != null)
+{
+    <p style="color:green;">@ViewBag.SuccessMessage</p>
+}
+
+
+
+<form asp-controller="LabSelector" asp-action="RunLab" method="post" enctype="multipart/form-data">
+    <input type="hidden" name="labName" value="Lab3" />
+
+    <label for="inputFile">Select Input File:</label>
+    <input type="file" id="inputFile" name="inputFile" accept=".txt" required />
+    <br />
+    <div>
+        <strong>Input File Content:</strong>
+        <pre id="inputFileContent" style="border: 1px solid #ddd; padding: 10px; max-height: 200px; overflow-y: auto;"></pre>
+    </div>
+    <br />
+
+    <label for="outputFile">Select Output File:</label>
+    <input type="file" id="outputFile" name="outputFile" accept=".txt" required />
+    <br />
+    <div>
+        <strong>Output File Content:</strong>
+        <pre id="outputFileContent" style="border: 1px solid #ddd; padding: 10px; max-height: 200px; overflow-y: auto;"></pre>
+    </div>
+    <br />
+
+    <button type="submit">Run Lab 3</button>
+</form>
+
+@if (ViewBag.InputFileContent != null && ViewBag.OutputFileContent != null)
+{
+    <div>
+        <h3>Input File Content:</h3>
+        <pre>@ViewBag.InputFileContent</pre>
+        <h3>Output File Content:</h3>
+        <pre>@ViewBag.OutputFileContent</pre>
+    </div>
+}
+
+<script>
+    let lastInputFile = null;
+    let lastOutputFile = null;
+
+    function displayFileContent(file, targetId) {
+        const target = document.getElementById(targetId);
+
+        if (file) {
+            const reader = new FileReader();
+
+            // When the file is read successfully, update the target element
+            reader.onload = function (e) {
+                target.textContent = e.target.result;
+            };
+
+            // Read the file as text
+            reader.readAsText(file);
+        } else {
+            target.textContent = "No file selected.";
+        }
+    }
+
+    function monitorFileInputs() {
+        const inputFileElement = document.getElementById("inputFile");
+        const outputFileElement = document.getElementById("outputFile");
+
+        // Check if the input file has changed
+        if (inputFileElement.files[0] !== lastInputFile) {
+            lastInputFile = inputFileElement.files[0];
+            displayFileContent(lastInputFile, "inputFileContent");
+        }
+
+        // Check if the output file has changed
+        if (outputFileElement.files[0] !== lastOutputFile) {
+            lastOutputFile = outputFileElement.files[0];
+            displayFileContent(lastOutputFile, "outputFileContent");
+        }
+    }
+
+    // Continuously monitor the input fields every 500ms
+    setInterval(monitorFileInputs, 500);
+</script>

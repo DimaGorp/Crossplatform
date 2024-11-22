@@ -1,6 +1,6 @@
 ﻿using System;
 using System.IO;
-namespace Lab1{
+namespace Lab1Main{
     public class Program
     {
         public static void Main(){

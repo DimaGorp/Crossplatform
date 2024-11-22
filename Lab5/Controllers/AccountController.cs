@@ -65,7 +65,9 @@ namespace WebApp.Controllers
                         Password = model.Password,
                         FullName = model.FullName,
                         PhoneNumber = model.PhoneNumber,
-                        Connection = "Username-Password-Authentication"  // This is typically the default database connection
+                        Connection = "Username-Password-Authentication",
+                        EmailVerified = true, // Set email as verified
+                        PhoneVerified = true  // Set phone number as verified
                     };
 
                     // Assuming you have access to an Auth0 Management API client
@@ -96,7 +98,7 @@ namespace WebApp.Controllers
             {
                 Name = User.Identity.Name,
                 PhoneNumber = User.Claims.FirstOrDefault(c => c.Type == "phone_number")?.Value,
-                EmailAddress = User.Claims.FirstOrDefault(c => c.Type == "email")?.Value,
+                EmailAddress = User.Claims.FirstOrDefault(c => c.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress")?.Value,
                 ProfileImage = User.Claims.FirstOrDefault(c => c.Type == "picture")?.Value
             });
         }
