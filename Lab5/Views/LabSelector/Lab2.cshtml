@@ -15,6 +15,69 @@
 }
 
 
+<div>
+    <h3>Варіант 16</h3>
+    <h3>Опис завдання</h3>
+    <p>
+        Як відомо, склянка – предмет вельми функціональний. Найбанальніший спосіб застосування – ємність для рідини, 
+        найоригінальніший ще не винайдений. А хлопчик Слава будує зі склянок вежі, користуючись дивовижною властивістю 
+        склянок ставитися один на одного або вставлятися один в одного.
+    </p>
+    <p>
+        Слава будує башти зі склянок висотою 10 сантиметрів, яких у нього є безліч. Склянку можна поставити на вже 
+        наявну конструкцію або дном вниз, або дном вгору. Якщо попередня склянка встановлена аналогічно новому, то 
+        конструкція зросте на 1 сантиметр, оскільки склянки одягаються один на одного. В іншому випадку вежа зросте 
+        на 10 сантиметрів.
+    </p>
+    <p>
+        Одного разу Слава зауважив, що в жодному разі не можна вставляти один в одного більше трьох склянок, інакше одна 
+        зі склянок обов'язково розіб'ється.
+    </p>
+    <p>
+        На малюнку показано приклад вежі заввишки 32 сантиметри з 5 склянок. Слава примудрився збудувати гарну вежу 
+        заввишки до сантиметрів. Але коли він пішов за фотоапаратом, щоб зняти це досягнення, випадково зачепив 
+        конструкцію, і вежа впала. Намагаючись відновити свій витвір, Слава зрозумів, що є кілька способів збудувати 
+        вежу аналогічної висоти. Допоможіть Славі обчислити точну кількість способів.
+    </p>
+    <h4>Вхідні дані</h4>
+    <p>
+        Вхідний файл <code>INPUT.TXT</code> містить натуральне число k (k ≤ 105).
+    </p>
+    <h4>Вихідні дані</h4>
+    <p>
+        У вихідний файл <code>OUTPUT.TXT</code> виведіть кількість способів побудувати вежу заданої висоти, взяту за модулем 106.
+    </p>
+    <h4>Приклади</h4>
+    <table style="border-collapse: collapse; width: 50%; text-align: left; border: 1px solid #ddd;">
+        <thead>
+            <tr>
+                <th style="border: 1px solid #ddd; padding: 8px;">№</th>
+                <th style="border: 1px solid #ddd; padding: 8px;">INPUT.TXT</th>
+                <th style="border: 1px solid #ddd; padding: 8px;">OUTPUT.TXT</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td style="border: 1px solid #ddd; padding: 8px;">1</td>
+                <td style="border: 1px solid #ddd; padding: 8px;">11</td>
+                <td style="border: 1px solid #ddd; padding: 8px;">2</td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid #ddd; padding: 8px;">2</td>
+                <td style="border: 1px solid #ddd; padding: 8px;">22</td>
+                <td style="border: 1px solid #ddd; padding: 8px;">6</td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid #ddd; padding: 8px;">3</td>
+                <td style="border: 1px solid #ddd; padding: 8px;">32</td>
+                <td style="border: 1px solid #ddd; padding: 8px;">12</td>
+            </tr>
+        </tbody>
+    </table>
+    <br><br>
+</div>
+
+
 <form asp-controller="LabSelector" asp-action="RunLab" method="post" enctype="multipart/form-data">
     <input type="hidden" name="labName" value="Lab2" />
 
@@ -48,6 +111,9 @@
         <pre>@ViewBag.OutputFileContent</pre>
     </div>
 }
+
+
+
 
 <script>
     let lastInputFile = null;
