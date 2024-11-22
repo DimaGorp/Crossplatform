@@ -5,31 +5,32 @@ using System.ComponentModel.DataAnnotations;
 using System.IO;
 
 
-[Command(Description = "Bichkov",Name ="LabTool")]
+[Command(Description = "tool for execute lab",Name ="LabTool")]
 [Subcommand(typeof(Version))]
 [Subcommand(typeof(Runner))]
 [Subcommand(typeof(EnvPathSetter))]
 class Program
 {   
-    public static void Main(string[] args) => 
-    CommandLineApplication.Execute<Program>(args);
+    public static int Main(string[] args){
     
-    private void OnExecute()
-    {
-        Console.WriteLine("Specify a command");
-    }
+        var app = new CommandLineApplication<Program>();
+        app.Conventions.UseDefaultConventions();
 
-    private void OnUnknownCommand(CommandLineApplication app)
-    {
-        Console.WriteLine("Usage:");
-        Console.WriteLine("  version|v                Show version info");
-        Console.WriteLine("  run [lab1|lab2|lab3]   Run a specific lab");
-        Console.WriteLine("  set-path -p|--path <path>     Set the LAB_PATH environment variable");
-        return;
-    }
+            // Действие, если команда не указана.
+        app.OnExecute(() => 
+        {
+        // Отображение справочной информации.
+            app.ShowHelp(); 
+            return 1;
+        });
 
+        // Указание, как обрабатывать нераспознанные аргументы: прекратить разбор и собрать их.
+        app.UnrecognizedArgumentHandling = UnrecognizedArgumentHandling.StopParsingAndCollect;
+
+        return app.Execute(args);
+    }
 }
-[Command(Name="version|v",Description="Show a version of a Library")]
+[Command(Name="version",Description="Show a version of a Library")]
 class Version{
     private void OnExecute(){
         Console.WriteLine("Library - Version 1.0.0");
