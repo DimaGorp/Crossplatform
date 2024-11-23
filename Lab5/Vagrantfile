@@ -1,0 +1,44 @@
+Vagrant.configure("2") do |config|
+    # Use Ubuntu 20.04 as the base box
+    config.vm.box = "ubuntu/focal64"
+    
+    # VirtualBox provider configuration
+    config.vm.provider "virtualbox" do |vb|
+      vb.memory = "2048" # Allocate 2GB of RAM
+      vb.cpus = 2        # Allocate 2 CPUs
+    end
+  
+    # Increase boot timeout to ensure ample time for provisioning
+    config.vm.boot_timeout = 300
+    
+    # Synced folder to share code between host and guest
+    config.vm.synced_folder "./", "/home/vagrant/CrossPlatformLabs-16"
+    
+    # Port forwarding to access the app on the host machine
+    config.vm.network "forwarded_port", guest: 5000, host: 5001
+  
+    # Provision the VM
+    config.vm.provision "shell", inline: <<-SHELL
+      # Update and upgrade packages
+      sudo apt-get update
+      sudo apt-get upgrade -y
+  
+      # Install wget and add Microsoft's package repository for .NET
+      sudo apt-get install -y wget
+      wget https://packages.microsoft.com/config/ubuntu/20.04/packages-microsoft-prod.deb -O packages-microsoft-prod.deb
+      sudo dpkg -i packages-microsoft-prod.deb
+  
+      # Update package lists again and install the .NET 8 SDK
+      sudo apt-get update
+      sudo apt-get install -y dotnet-sdk-8.0
+  
+      # Navigate to the shared folder and build the .NET project
+      cd /home/vagrant/CrossPlatformLabs-16/
+      dotnet restore
+      dotnet build
+  
+      # Run the application
+      dotnet run --urls "http://localhost:5203"
+    SHELL
+  end
+  
